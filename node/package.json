@@ -9,6 +9,7 @@
   },
   "scripts": {
     "check": "for f in _shared/*.mjs */*.mjs; do node --check \"$f\" || exit 1; done",
+    "test": "node --test _shared/extract.test.mjs",
     "typecheck": "tsc -p jsconfig.json"
   },
   "dependencies": {

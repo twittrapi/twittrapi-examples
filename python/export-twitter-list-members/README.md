@@ -10,13 +10,13 @@ Export all members of a public Twitter/X list to a CSV file with ID, username, n
 cd python/export-twitter-list-members
 pip install -r requirements.txt
 export TWITTRAPI_API_KEY=your_key      # or: export RAPIDAPI_KEY=your_rapidapi_key
-python export_list_members.py https://x.com/i/lists/1234567890 members.csv
+python export_list_members.py https://x.com/i/lists/84839422 members.csv
 ```
 
 ## Sample output
 
 ```text
-Wrote 214 members of list 1234567890 to members.csv
+Wrote 214 members of list 84839422 to members.csv
 
 $ head -2 members.csv
 id,username,name,followers,following,tweets,verified,bio

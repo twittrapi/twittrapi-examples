@@ -74,8 +74,8 @@ func main() {
 		newest := last
 		var fresh []extract.Tweet
 		for _, t := range extract.Tweets(raw) {
-			// Skip retweets of other accounts; keep the account's own tweets.
-			if t.Author != "" && !strings.EqualFold(t.Author, name) {
+			// Skip retweets and tweets by other accounts; keep the account's own tweets.
+			if t.RetweetOf != "" || (t.Author != "" && !strings.EqualFold(t.Author, name)) {
 				continue
 			}
 			if newer(t.ID, newest) {

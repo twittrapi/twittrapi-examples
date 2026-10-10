@@ -40,11 +40,16 @@ export function flatUser(u) {
   };
 }
 
-/** Every user in a response, flattened and de-duplicated by ID, in response order. */
+/**
+ * Every user in a response, flattened and de-duplicated by ID, in response order. Finds
+ * `user_results.result` (timelines, followers, list members, retweeters) and plain
+ * `{ result: { __typename: "User" } }` items (users by IDs, community members).
+ */
 export function extractUsers(data) {
   const users = new Map();
   for (const obj of walk(data)) {
-    const u = obj.user_results?.result;
+    let u = obj.user_results?.result;
+    if (!u?.rest_id && obj.result?.__typename === "User") u = obj.result;
     if (u?.rest_id && !users.has(u.rest_id)) users.set(u.rest_id, flatUser(u));
   }
   return [...users.values()];
@@ -58,25 +63,45 @@ export function extractProfile(data) {
   return null;
 }
 
-/** Every tweet in a response, flattened and de-duplicated by ID, newest first. */
+const unwrapTweet = (t) => (t?.__typename === "TweetWithVisibilityResults" ? t.tweet : t);
+/** Long-form `note_tweet` text when present, else `legacy.full_text`. */
+const tweetText = (t) => t.note_tweet?.note_tweet_results?.result?.text ?? t.legacy?.full_text ?? "";
+/** The author's handle (`core.screen_name` since 2025, `legacy.screen_name` before). */
+const screenName = (t) => {
+  const author = t.core?.user_results?.result;
+  return author?.core?.screen_name ?? author?.legacy?.screen_name ?? "";
+};
+
+/**
+ * Every tweet in a response, flattened and de-duplicated by ID, newest first. Entries with an
+ * empty `tweet_results` (deleted tweets or articles) are skipped. For a retweet, `text` is
+ * `"RT @user: "` plus the original's full text and `retweetOf` is the original author.
+ */
 export function extractTweets(data) {
   const tweets = new Map();
   for (const obj of walk(data)) {
-    let t = obj.tweet_results?.result;
-    if (t?.__typename === "TweetWithVisibilityResults") t = t.tweet;
+    const t = unwrapTweet(obj.tweet_results?.result);
     if (!t?.legacy || !t.rest_id || tweets.has(t.rest_id)) continue;
-    const author = t.core?.user_results?.result;
-    const username = author?.core?.screen_name ?? author?.legacy?.screen_name ?? "";
+    const username = screenName(t);
+    let text = tweetText(t);
+    let retweetOf = "";
+    // A retweet's own full_text is "RT @user: " plus a truncated copy; use the original.
+    const original = unwrapTweet(t.legacy.retweeted_status_result?.result);
+    if (original?.legacy) {
+      retweetOf = screenName(original);
+      text = `RT @${retweetOf}: ${tweetText(original)}`;
+    }
     tweets.set(t.rest_id, {
       id: t.rest_id,
       createdAt: t.legacy.created_at ?? "",
       author: username,
-      text: t.note_tweet?.note_tweet_results?.result?.text ?? t.legacy.full_text ?? "",
+      text,
       likes: num(t.legacy.favorite_count) ?? 0,
       retweets: num(t.legacy.retweet_count) ?? 0,
       replies: num(t.legacy.reply_count) ?? 0,
       views: num(t.views?.count),
       lang: t.legacy.lang ?? "",
+      retweetOf,
       url: `https://x.com/${username || "i"}/status/${t.rest_id}`,
     });
   }

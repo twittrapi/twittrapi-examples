@@ -48,11 +48,18 @@ def flat_user(user: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def users(data: Any) -> List[Dict[str, Any]]:
-    """Every user in a response, flattened and de-duplicated by ID, in response order."""
+    """Every user in a response, flattened and de-duplicated by ID, in response order.
+
+    Finds ``user_results.result`` (timelines, followers, list members, retweeters) and plain
+    ``{"result": {"__typename": "User"}}`` items (users by IDs, community members).
+    """
     out: Dict[str, Dict[str, Any]] = {}
     for obj in walk(data):
         holder = obj.get("user_results")
         user = holder.get("result") if isinstance(holder, dict) else None
+        if not (isinstance(user, dict) and user.get("rest_id")):
+            result = obj.get("result")
+            user = result if isinstance(result, dict) and result.get("__typename") == "User" else None
         if isinstance(user, dict) and user.get("rest_id") and user["rest_id"] not in out:
             out[user["rest_id"]] = flat_user(user)
     return list(out.values())
@@ -66,32 +73,60 @@ def first_user(data: Any) -> Optional[Dict[str, Any]]:
     return None
 
 
+def _unwrap_tweet(tweet: Any) -> Any:
+    """The tweet inside a ``TweetWithVisibilityResults`` wrapper, or ``tweet`` itself."""
+    if isinstance(tweet, dict) and tweet.get("__typename") == "TweetWithVisibilityResults":
+        return tweet.get("tweet")
+    return tweet
+
+
+def _tweet_text(tweet: Dict[str, Any]) -> str:
+    """Long-form ``note_tweet`` text when present, else ``legacy.full_text``."""
+    note = (((tweet.get("note_tweet") or {}).get("note_tweet_results") or {}).get("result") or {})
+    return note.get("text") or (tweet.get("legacy") or {}).get("full_text") or ""
+
+
+def _screen_name(tweet: Dict[str, Any]) -> str:
+    """The author's handle (``core.screen_name`` since 2025, ``legacy.screen_name`` before)."""
+    author = ((tweet.get("core") or {}).get("user_results") or {}).get("result") or {}
+    return (author.get("core") or {}).get("screen_name") or (author.get("legacy") or {}).get("screen_name") or ""
+
+
 def tweets(data: Any) -> List[Dict[str, Any]]:
-    """Every tweet in a response, flattened and de-duplicated by ID, newest first."""
+    """Every tweet in a response, flattened and de-duplicated by ID, newest first.
+
+    Entries with an empty ``tweet_results`` (deleted tweets or articles) are skipped. For a
+    retweet, ``text`` is ``"RT @user: "`` plus the original's full text and ``retweet_of`` is
+    the original author.
+    """
     out: Dict[str, Dict[str, Any]] = {}
     for obj in walk(data):
         holder = obj.get("tweet_results")
-        tweet = holder.get("result") if isinstance(holder, dict) else None
-        if isinstance(tweet, dict) and tweet.get("__typename") == "TweetWithVisibilityResults":
-            tweet = tweet.get("tweet")
+        tweet = _unwrap_tweet(holder.get("result") if isinstance(holder, dict) else None)
         if not isinstance(tweet, dict) or not isinstance(tweet.get("legacy"), dict):
             continue
         tid = tweet.get("rest_id")
         if not tid or tid in out:
             continue
         legacy = tweet["legacy"]
-        author = ((tweet.get("core") or {}).get("user_results") or {}).get("result") or {}
-        note = (((tweet.get("note_tweet") or {}).get("note_tweet_results") or {}).get("result") or {})
-        username = (author.get("core") or {}).get("screen_name") or (author.get("legacy") or {}).get("screen_name") or ""
+        username = _screen_name(tweet)
+        text = _tweet_text(tweet)
+        retweet_of = ""
+        # A retweet's own full_text is "RT @user: " plus a truncated copy; use the original.
+        original = _unwrap_tweet(((legacy.get("retweeted_status_result") or {}).get("result")))
+        if isinstance(original, dict) and isinstance(original.get("legacy"), dict):
+            retweet_of = _screen_name(original)
+            text = f"RT @{retweet_of}: {_tweet_text(original)}"
         out[tid] = {
             "id": tid,
             "created_at": legacy.get("created_at", ""),
             "author": username,
-            "text": note.get("text") or legacy.get("full_text") or "",
+            "text": text,
             "likes": _int(legacy.get("favorite_count")) or 0,
             "retweets": _int(legacy.get("retweet_count")) or 0,
             "replies": _int(legacy.get("reply_count")) or 0,
             "views": _int((tweet.get("views") or {}).get("count")),
+            "retweet_of": retweet_of,
             "url": f"https://x.com/{username or 'i'}/status/{tid}",
         }
     # Tweet IDs grow over time, so sorting by ID sorts by time.

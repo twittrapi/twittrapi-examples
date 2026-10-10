@@ -19,7 +19,7 @@ python download_tweets.py --user jack -o jack.json --max-pages 5
 ```text
 Saved 58 tweets to tweets.json
 
-$ head -12 tweets.json
+$ head -13 tweets.json
 [
   {
     "id": "1976512345678901234",
@@ -30,6 +30,7 @@ $ head -12 tweets.json
     "retweets": 6,
     "replies": 3,
     "views": 3120,
+    "retweet_of": "",
     "url": "https://x.com/example_dev/status/1976512345678901234"
   },
 ```

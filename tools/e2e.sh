@@ -28,7 +28,7 @@ expect '"author": "user_0"' tweets.json
 run $PY "$ROOT/python/twitter-followers-count-tracker/track_followers.py" jack nasa --csv history.csv
 run $PY "$ROOT/python/twitter-followers-count-tracker/track_followers.py" jack nasa --csv history.csv
 expect "NASA" history.csv
-run $PY "$ROOT/python/export-twitter-list-members/export_list_members.py" https://x.com/i/lists/1234567890 members.csv
+run $PY "$ROOT/python/export-twitter-list-members/export_list_members.py" https://x.com/i/lists/84839422 members.csv
 expect "user_9" members.csv
 
 echo; echo "== Node"

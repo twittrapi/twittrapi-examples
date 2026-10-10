@@ -1,9 +1,10 @@
 """Export the members of a Twitter/X list to CSV.
 
     export TWITTRAPI_API_KEY=...        # or RAPIDAPI_KEY=...
-    python export_list_members.py 1234567890 members.csv
+    python export_list_members.py 84839422 members.csv
 
 The list ID is the number in the list URL: https://x.com/i/lists/<list_id>
+(84839422 is X's public "Official Twitter Accounts" list.)
 """
 
 import argparse
