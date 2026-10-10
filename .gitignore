@@ -1,0 +1,18 @@
+# Local development against unpublished SDK checkouts (see tools/setup-local-sdks.sh)
+.venv/
+go.work
+go.work.sum
+node_modules/
+
+# Python / OS noise
+__pycache__/
+*.pyc
+.DS_Store
+
+# Secrets: never commit keys or Google credentials
+.env
+.env.*
+service-account*.json
+
+# State files written by the monitor examples
+.seen-*.json

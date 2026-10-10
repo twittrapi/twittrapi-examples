@@ -1,0 +1,21 @@
+{
+  "name": "twittrapi-node-examples",
+  "private": true,
+  "description": "Node.js examples for TwittrAPI, a Twitter/X data API.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "check": "for f in _shared/*.mjs */*.mjs; do node --check \"$f\" || exit 1; done",
+    "typecheck": "tsc -p jsconfig.json"
+  },
+  "dependencies": {
+    "twittrapi": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "typescript": "^6.0.3"
+  }
+}
