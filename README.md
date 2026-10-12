@@ -1,8 +1,16 @@
+<p align="center">
+  <a href="https://twittrapi.com"><img src=".github/banner.png" alt="twittrapi-examples: copy-paste Twitter/X API examples in Python, Node.js and Go" width="100%"></a>
+</p>
+
 # TwittrAPI examples – Twitter/X API code samples in Python, Node.js and Go
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Copy-paste examples for [TwittrAPI](https://twittrapi.com/?utm_source=github&utm_medium=readme&utm_campaign=examples), a read API for Twitter/X data: profiles, tweets, followers, search, lists, communities and trends. Each folder solves one common task, such as exporting followers to CSV, monitoring a keyword in Slack or getting trends by country, and has its own README with the command to run and sample output.
 
-> **Get an API key:** [twittrapi.com/start](https://twittrapi.com/start?utm_source=github&utm_medium=readme&utm_campaign=examples) · also available on [RapidAPI](https://rapidapi.com/viperscores-viperscores-default/api/twitter-aio)
+> **Get an API key:** [twittrapi.com/start](https://twittrapi.com/start?utm_source=github&utm_medium=readme&utm_campaign=twittrapi-examples) · [Pricing](https://twittrapi.com/pricing?utm_source=github&utm_medium=readme&utm_campaign=twittrapi-examples) · [Docs](https://twittrapi.com/docs?utm_source=github&utm_medium=readme&utm_campaign=twittrapi-examples) · [Status](https://twittrapi.com/status) · also available on [RapidAPI](https://rapidapi.com/viperscores-viperscores-default/api/twitter-aio)
+
+**SDKs and integrations:** [Python](https://github.com/twittrapi/twittrapi-python) · [Node.js](https://github.com/twittrapi/twittrapi-node) · [Go](https://github.com/twittrapi/twittrapi-go) · [MCP server](https://github.com/twittrapi/twittrapi-mcp) · [n8n](https://github.com/twittrapi/n8n-nodes-twittrapi) · [Make](https://github.com/twittrapi/twittrapi-make) · [Apify](https://github.com/twittrapi/twittrapi-apify) · [LangChain](https://github.com/twittrapi/langchain-twittrapi) · [LlamaIndex](https://github.com/twittrapi/llama-index-tools-twittrapi) · [Agent skill](https://github.com/twittrapi/twittrapi-skills)
 
 > **Note:** the official SDKs ([`twittrapi` on PyPI](https://github.com/twittrapi/twittrapi-python), [`twittrapi` on npm](https://github.com/twittrapi/twittrapi-node), [`twittrapi-go`](https://github.com/twittrapi/twittrapi-go)) are being published. Until they are live, `pip install`, `npm install` and `go get` for them may fail; the curl examples work today.
 
@@ -43,7 +51,7 @@ Copy-paste examples for [TwittrAPI](https://twittrapi.com/?utm_source=github&utm
 3. Run an example:
 
    ```bash
-   git clone https://github.com/twittrapi/examples.git twittrapi-examples
+   git clone https://github.com/twittrapi/twittrapi-examples.git
    cd twittrapi-examples
 
    # Python
