@@ -24,6 +24,7 @@ Copy-paste examples for [TwittrAPI](https://twittrapi.com/?utm_source=github&utm
 | [Twitter followers count tracker in Python](python/twitter-followers-count-tracker) | Python | Log follower counts for several accounts to a CSV history and show daily change. |
 | [Send tweets to Google Sheets with Python](python/tweets-to-google-sheets) | Python | Append tweets matching a search to a Google Sheet, skipping duplicates. |
 | [Export Twitter list members to CSV with Python](python/export-twitter-list-members) | Python | Save every member of an X list to CSV. |
+| [Real-time tweet alerts to Telegram, Discord or Slack (Python)](python/tweet-alerts-to-telegram-discord) | Python | Receive new tweets of watched accounts by webhook and forward them to a chat. |
 | [Monitor a Twitter keyword and send new tweets to Slack (Node.js)](node/monitor-twitter-keyword-and-send-to-slack) | Node.js | Poll X search for a keyword and post new tweets to a Slack webhook. |
 | [Scrape Twitter search results with Node.js](node/scrape-twitter-search-results) | Node.js | Save X search results (Top, Latest, Photos, Videos) to CSV or JSON. |
 | [Find tweets mentioning a brand (Node.js)](node/find-tweets-mentioning-a-brand) | Node.js | Find mentions of a brand name or @handle, ranked by engagement. |

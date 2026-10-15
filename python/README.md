@@ -5,7 +5,7 @@ Python scripts that use the official [`twittrapi`](https://pypi.org/project/twit
 > **Get an API key:** [twittrapi.com/start](https://twittrapi.com/start?utm_source=github&utm_medium=readme&utm_campaign=examples) · also available on [RapidAPI](https://rapidapi.com/viperscores-viperscores-default/api/twitter-aio)
 
 ```bash
-pip install twittrapi                     # gspread too for tweets-to-google-sheets
+pip install twittrapi                     # gspread too for tweets-to-google-sheets; flask for tweet-alerts-to-telegram-discord
 export TWITTRAPI_API_KEY=your_key         # or: export RAPIDAPI_KEY=your_rapidapi_key
 python export-twitter-followers-to-csv/export_followers.py jack followers.csv
 ```
