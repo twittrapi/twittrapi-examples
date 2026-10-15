@@ -1,1 +1,1 @@
-twittrapi>=0.1.0
+twittrapi>=1.0.0

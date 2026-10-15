@@ -13,7 +13,7 @@
     "typecheck": "tsc -p jsconfig.json"
   },
   "dependencies": {
-    "twittrapi": "^0.1.0"
+    "twittrapi": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.19.0",
