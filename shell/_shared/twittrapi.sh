@@ -3,6 +3,7 @@
 #   twittrapi_get /path [extra curl args...]   -> prints the JSON body, exits non-zero on HTTP errors
 #
 # Auth: TWITTRAPI_API_KEY (direct API, X-API-KEY header) or RAPIDAPI_KEY (RapidAPI headers).
+# RAPIDAPI_HOST sets the RapidAPI listing's host (default twitter-aio.p.rapidapi.com).
 # TWITTRAPI_BASE_URL overrides the direct API base URL (e.g. for a local mock server).
 #
 # The jq filters below read X's raw GraphQL JSON. The response shapes come from X and may change,
@@ -10,13 +11,15 @@
 
 twittrapi_get() {
   local path="$1"; shift
-  local base auth_args
+  local base auth_args host
   if [ -n "${TWITTRAPI_API_KEY:-}" ]; then
     base="${TWITTRAPI_BASE_URL:-https://api.twittrapi.com}"
     auth_args=(-H "X-API-KEY: ${TWITTRAPI_API_KEY}")
   elif [ -n "${RAPIDAPI_KEY:-}" ]; then
-    base="https://twitter-aio.p.rapidapi.com"
-    auth_args=(-H "x-rapidapi-key: ${RAPIDAPI_KEY}" -H "x-rapidapi-host: twitter-aio.p.rapidapi.com")
+    host="${RAPIDAPI_HOST:-twitter-aio.p.rapidapi.com}"
+    host="${host#https://}"; host="${host%/}"
+    base="https://${host}"
+    auth_args=(-H "x-rapidapi-key: ${RAPIDAPI_KEY}" -H "x-rapidapi-host: ${host}")
   else
     echo "Set TWITTRAPI_API_KEY (https://twittrapi.com/start) or RAPIDAPI_KEY first." >&2
     return 1

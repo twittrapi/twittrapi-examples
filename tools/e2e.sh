@@ -12,7 +12,7 @@ MOCK_PID=$!
 for _ in $(seq 1 50); do curl -s "http://127.0.0.1:$PORT/" >/dev/null 2>&1 && break; sleep 0.1; done
 
 export TWITTRAPI_API_KEY=test-key TWITTRAPI_BASE_URL="http://127.0.0.1:$PORT"
-unset RAPIDAPI_KEY
+unset RAPIDAPI_KEY RAPIDAPI_HOST
 PY="$ROOT/.venv/bin/python -W ignore"
 pass=0
 run() { echo; echo "\$ $*"; "$@"; pass=$((pass + 1)); }
@@ -63,5 +63,7 @@ echo; echo "== Shell"
 run "$ROOT/shell/get-twitter-user-id-from-username/user-id.sh" jack nasa
 run "$ROOT/shell/search-tweets-with-curl/search.sh" "curl"
 run "$ROOT/shell/get-twitter-trends-with-curl/trends.sh" 23424829
+# The mock accepts RapidAPI headers with any listing's host.
+run curl -sf -o /dev/null -H "x-rapidapi-key: test-key" -H "x-rapidapi-host: other-listing.p.rapidapi.com" "$TWITTRAPI_BASE_URL/user/by/username/jack"
 
 echo; echo "E2E: $pass example runs passed against the mock server."

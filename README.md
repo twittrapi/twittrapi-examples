@@ -48,6 +48,8 @@ Copy-paste examples for [TwittrAPI](https://twittrapi.com/?utm_source=github&utm
    export RAPIDAPI_KEY=your_rapidapi_key
    ```
 
+   Subscribed to another TwittrAPI listing on RapidAPI? Also set `RAPIDAPI_HOST` to the host shown on your listing (default `twitter-aio.p.rapidapi.com`).
+
 3. Run an example:
 
    ```bash
